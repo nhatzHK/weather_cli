@@ -16,7 +16,7 @@
 #Retrieving URL
 WURL="http://www.wttr.in"
 function TEMP {
-	curl -s $WURL | head -n 4| tail -n 1| perl -pe 's/\x1b\[[0-9;]*m//g'
+	curl -s $WURL | head -n 4| tail -n 1| perl -pe 's/\x1b\[[0-9;]*m//g' | cut -c 16-
 }
 
 function OVERVIEW {
