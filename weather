@@ -15,8 +15,12 @@
 
 #Retrieving URL
 WURL="http://www.wttr.in"
+function COND {
+  curl -s $WURL | tail -n 38| head -n 1 | perl -pe 's/\x1b\[[0-9;]*m//g' | cut -c 16- | perl -pe 's/[\s]*\n//g'
+}
+
 function TEMP {
-	curl -s $WURL | head -n 4| tail -n 1| perl -pe 's/\x1b\[[0-9;]*m//g' | cut -c 16-
+	curl -s $WURL | tail -n 37| head -n 1| perl -pe 's/\x1b\[[0-9;]*m//g' | cut -c 16- | perl -pe 's/[\s]*\n//g'
 }
 
 function OVERVIEW {
@@ -53,9 +57,13 @@ else
 	if `echo ${args[@]} | grep -q "all"` ; then 					#print everything once and at once and in order
 		ALL
 	else	#print each options by priority
-		if `echo ${args[@]} | grep -q "few"` ; then 				#print temperature only
-			TEMP
-		else 									#print each option by priority
+		if `echo ${args[@]} | grep -q "bar"` ; then 				#print temperature only
+      { TEMP; echo " "; COND; } | tr "[\W]*\n" " " 
+    elif `echo ${args[@]} | grep -q "temperature"`; then
+      TEMP
+    elif `echo ${args[@]} | grep -q "condition"` ; then
+      COND
+    else 									#print each option by priority
 			if `echo ${args[@]} | grep -q "overview"` ; then
 				OVERVIEW
 			fi
@@ -63,11 +71,11 @@ else
 				TODAY
 			fi
 			if `echo ${args[@]} | grep -q "tomorrow"` ; then
-                        	TOMORROW
-                	fi
+        TOMORROW
+      fi
 			if `echo ${args[@]} | grep -q "overmorrow"` ; then
-                        	OVERMORROW
-                	fi
+        OVERMORROW
+      fi
 		fi
 	fi
 fi
