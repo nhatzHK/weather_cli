@@ -1,1 +1,1 @@
-See the current wwather through the command line using wttr.in
+See the current weather through the command line using wttr.in
